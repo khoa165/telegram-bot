@@ -41,6 +41,26 @@ bot.onText(/\/word (.+)/, (msg, match) => {
     });
 });
 
+bot.onText(/\/send cat/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const randomCat = require('./features/cat.js');
+  const catImage = randomCat();
+  bot.sendPhoto(chatId, catImage, {caption: "A cute cat makes a cute chat!"});
+});
+
+bot.onText(/\/send cat/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const randomCat = require('./features/cat.js');
+  const catImage = randomCat();
+  bot.sendPhoto(chatId, catImage, {caption: "A cute cat makes a cute chat!"});
+});
+
+// Listen for any kind of message.
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, 'Meow meow! Your meow-ssage was received!');
+});
+
 app.use(bodyParser.json());
 
 app.listen(process.env.PORT);
