@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 const app = express();
 require('dotenv').config();
 
+const catPhoto = require('./features/cat_photo.js');
+const catFact = require('./features/cat_fact.js');
+
 const token = process.env.TELEGRAM_TOKEN;
 let bot;
 
@@ -36,23 +39,29 @@ bot.onText(/\/word (.+)/, (msg, match) => {
       bot.sendMessage(chatId, parsedHtml, { parse_mode: 'HTML' });
     })
     .catch(error => {
-      const errorText = error.response.status === 404 ? `No definition found for the word: <b>${word}</b>` : `<b>An error occured, please try again later</b>`;
+      const errorText = error.response.status === 404 ? `No definition found for the word: <b>${word}</b>` : `<b>An error occured, please try again later!</b>`;
       bot.sendMessage(chatId, errorText, { parse_mode:'HTML'})
     });
 });
 
-bot.onText(/\/send cat/, (msg, match) => {
+bot.onText(/\/send cat photo/, (msg, match) => {
   const chatId = msg.chat.id;
-  const randomCat = require('./features/cat.js');
-  const catImage = randomCat();
-  bot.sendPhoto(chatId, catImage, {caption: "A cute cat makes a cute chat!"});
+  const photo = catPhoto();
+  bot.sendPhoto(chatId, photo, {caption: "A cute cat makes a cute chat!"});
 });
 
-bot.onText(/\/send cat/, (msg, match) => {
+bot.onText(/\/send cat fact/, (msg, match) => {
   const chatId = msg.chat.id;
-  const randomCat = require('./features/cat.js');
-  const catImage = randomCat();
-  bot.sendPhoto(chatId, catImage, {caption: "A cute cat makes a cute chat!"});
+  axios
+    .get('https://catfact.ninja/fact')
+    .then(response => {
+      const fact = catFact(response);
+      bot.sendMessage(chatId, fact, { parse_mode: 'HTML' });
+    })
+    .catch(error => {
+      const errorText = '<b>An error occured, please try again later!</b>';
+      bot.sendMessage(chatId, errorText, { parse_mode:'HTML'})
+    });
 });
 
 // Listen for any kind of message.

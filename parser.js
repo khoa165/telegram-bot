@@ -24,6 +24,7 @@ function mainEntriesToHtml(entries) {
 }
 
 function parser(json) {
+  console.log(json);
   let definitionCount = 0;
   const parseEntries = json.results[0].lexicalEntries.flatMap(lexicalEntry => {
     const constructObject = { lexicalCategory: lexicalEntry.lexicalCategory.text }
@@ -46,10 +47,8 @@ function parser(json) {
     ${mainEntriesToHtml(entry.entries).join('')}`
   }).join('');
 
-  return `
-  Word: <b>${json.word}</b>
+  return `Word: <b>${json.word}</b>
   <b>${definitionCount}</b> definition(s) found for the word: <b>${json.word}</b>
-
   ${parsedHtml}`
 }
 
